@@ -38,7 +38,7 @@ public class PlayerControllerX : MonoBehaviour
     void Update()
     {
         // While space is pressed and player is low enough, float up
-        if (Input.GetKey(KeyCode.Space) && !gameOver)            
+        if (Input.GetButton("Jump") && !gameOver)            
         {            
             if (transform.position.y < upBound)
             {
@@ -61,17 +61,8 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(explodeSound, 1.0f);
             gameOver = true;
             Debug.Log("Game Over!");
-            Destroy(other.gameObject);
-        } 
-
-        // if player collides with money, fireworks
-        else if (other.gameObject.CompareTag("Money"))
-        {
-            fireworksParticle.Play();
-            playerAudio.PlayOneShot(moneySound, 1.0f);
-            Destroy(other.gameObject);
-
-        }
+            Destroy(other.gameObject);            
+        }        
 
         //if player collides with ground, impulse
         else if (other.gameObject.CompareTag("Ground") && !gameOver)
@@ -80,6 +71,17 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(impulseSound, 1.0f);
         }
 
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // if player trigger collider with money, fireworks
+        if (other.gameObject.CompareTag("Money"))
+        {
+            fireworksParticle.Play();
+            playerAudio.PlayOneShot(moneySound, 1.0f);
+            Destroy(other.gameObject);
+        }
     }
 
 }
