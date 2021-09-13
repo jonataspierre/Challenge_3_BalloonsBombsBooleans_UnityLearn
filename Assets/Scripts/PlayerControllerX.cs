@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class PlayerControllerX : MonoBehaviour
 {
+    private GameManager gameManager;
+
     public bool gameOver;
 
     public float floatForce;
     private float gravityModifier = 1.5f;
-    private float upBound = 14.5f;    
+    private float upBound = 14.5f;
+    private int pointMoneyValue = 10;
 
     private Rigidbody playerRb;
 
@@ -24,6 +27,8 @@ public class PlayerControllerX : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         playerRb = GetComponent<Rigidbody>();
         Physics.gravity *= gravityModifier;
 
@@ -59,9 +64,10 @@ public class PlayerControllerX : MonoBehaviour
         {
             explosionParticle.Play();
             playerAudio.PlayOneShot(explodeSound, 1.0f);
-            gameOver = true;
-            Debug.Log("Game Over!");
-            Destroy(other.gameObject);            
+            gameOver = true;            
+            Destroy(other.gameObject);
+
+            gameManager.GameOver();
         }        
 
         //if player collides with ground, impulse
@@ -78,10 +84,10 @@ public class PlayerControllerX : MonoBehaviour
         // if player trigger collider with money, fireworks
         if (other.gameObject.CompareTag("Money"))
         {
+            gameManager.UpdateScore(pointMoneyValue);
             fireworksParticle.Play();
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
         }
     }
-
 }
